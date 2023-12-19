@@ -1,0 +1,20 @@
+ 1  mkdir pratica07
+ 2  cd pratica07
+ 3  nano blink.sh
+ 4  chmod +x ./blink.sh
+ 5  nano blink.service
+ 7  sudo cp blink.service /lib/systemd/system/
+ 8  sudo systemctl start blink
+ 9  sudo systemctl stop blink
+10  sudo systemctl enable blink
+11  sudo systemctl disable blink
+12  nano tarefa.py
+13  python tarefa.py
+14  chmod +x ./tarefa.py
+15  nano tarefa.service
+16  sudo cp tarefa.service /lib/systemd/system/
+17  sudo systemctl start tarefa
+18  sudo systemctl stop tarefa
+19  sudo systemctl enable tarefa
+20  sudo systemctl disable tarefa
+21  history > history.txt

@@ -1,0 +1,99 @@
+Prática 07
+
+Leonardo Cesar dos Santos - 12542518
+Tainara dos Santos Mareco - 12731144
+
+Comentários
+
+Blink:
+
+- Arquivo .sh
+
+#!/bin/bash (shebang que indica que o script blink.sh deve ser executado usando o interpretador Bash no sistema Unix/Linux)
+
+echo 18 > /sys/class/gpio/export (Exporta o pino GPIO 18)
+echo out > /sys/class/gpio/gpio18/direction (Configura o pino GPIO 18 como saída)
+
+while [ 1 ]
+	do
+		echo 1 > /sys/class/gpio/gpio18/value (Liga o LED conectado ao GPIO 18)
+		sleep 0.2s (Espera 0.2 segundos)
+		echo 0 > /sys/class/gpio/gpio18/value (Desliga o LED conectado ao GPIO 18)
+		sleep 0.2s (Espera 0.2 segundos)
+	done
+
+- Arquivo .service
+
+[Unit]
+Description=Blink LED (Descrição do serviço: Blink LED)
+After=multi-user.target (Dependência: Inicia após o carregamento do multi-user.target)
+
+[Service]
+ExecStart=//home/sel/pratica07/blink.sh (Comando de início: Executa o script blink.sh ao iniciar o serviço)
+#ExecStop= (Comando de parada comentado)
+user=SEL (Usuário que executa o serviço)
+
+[Install] (Alvo de instalação: multi-user.target)
+WantedBy=multi-user.target (Alvo desejado para a instalação)
+
+Tarefa:
+
+- Arquivo .service
+[Unit]
+Description=Tarefa
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/python3 /home/sel/pratica07/tarefa.py (único comando diferente do que foi feito na parte "Blink": Executa o script tarefa.py usando o interpretador Python 3)
+#ExecStop=
+user=SEL
+
+[Install]
+WantedBy=multi-user.target
+
+- Arquivo .py
+
+# Importa as bibliotecas GPIO e time do módulo gpiozero
+from gpiozero import LED
+from time import sleep
+
+# Cria um objeto LED associado ao pino GPIO 13
+led = LED(13)
+
+# Loop infinito
+while True:
+        # Liga o LED conectado ao GPIO 13
+        led.on()
+        # Aguarda 0.8 segundos
+        sleep(0.8)
+        # Desliga o LED conectado ao GPIO 13
+        led.off()
+        # Aguarda mais 0.8 segundos
+        sleep(0.8)
+
+- Histórico
+
+ 1  mkdir pratica07 (Cria um diretório chamado 'pratica07')
+ 2  cd pratica07 (Muda para o diretório 'pratica07')
+ 3  nano blink.sh (Abre o editor de texto 'nano' para criar/editar o script 'blink.sh')
+ 4  chmod +x ./blink.sh (Concede permissão de execução ao script 'blink.sh')
+ 5  nano blink.service (Abre o editor de texto 'nano' para criar/editar o arquivo de serviço 'blink.service'
+nano blink.service)
+ 7  sudo cp blink.service /lib/systemd/system/ (Copia o arquivo de serviço 'blink.service' para o diretório do systemd)
+ 8  sudo systemctl start blink (Inicia o serviço 'blink')
+ 9  sudo systemctl stop blink (Para o serviço 'blink')
+10  sudo systemctl enable blink (Configura o serviço 'blink' para iniciar automaticamente no boot)
+11  sudo systemctl disable blink (Desabilita o serviço 'blink' para iniciar automaticamente no boot)
+12  nano tarefa.py (Abre o editor de texto 'nano' para criar/editar o script 'tarefa.py')
+13  python tarefa.py (Executa o script 'tarefa.py' utilizando o interpretador Python)
+14  chmod +x ./tarefa.py (Concede permissão de execução ao script 'tarefa.py')
+15  nano tarefa.service (Abre o editor de texto 'nano' para criar/editar o arquivo de serviço 'tarefa.service')
+16  sudo cp tarefa.service /lib/systemd/system/ (Copia o arquivo de serviço 'tarefa.service' para o diretório do systemd)
+17  sudo systemctl start tarefa (Inicia o serviço 'tarefa')
+18  sudo systemctl stop tarefa (Para o serviço 'tarefa')
+19  sudo systemctl enable tarefa (Configura o serviço 'tarefa' para iniciar automaticamente no boot)
+20  sudo systemctl disable tarefa (Desabilita o serviço 'tarefa' para iniciar automaticamente no boot)
+21  history > history.txt (Salva o histórico dos comandos no arquivo 'history.txt')
+
+obs.: a Raspberry foi reiniciada para a verificação do início do serviço automaticamente no boot para os dois casos (blink e tarefa)
+
